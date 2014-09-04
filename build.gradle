@@ -1,0 +1,16 @@
+voice {
+    name 'dfki-spike'
+    language 'en'
+    region 'GB'
+    gender 'male'
+    type 'unit selection'
+    description 'temporary'
+    samplingRate 16000
+    wantsToBeDefault 20
+}
+
+license {
+    name 'temporary'
+    shortName 'temporary'
+    url 'temporary'
+}

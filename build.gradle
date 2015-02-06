@@ -2,14 +2,3 @@ apply plugin: 'de.dfki.mary.voicebuilding'
 
 group 'de.dfki.mary'
 version '5.1.2'
-
-voice {
-    name 'dfki-spike'
-    language 'en'
-    region 'GB'
-    gender 'male'
-    type 'unit selection'
-    description 'A male British English expressive unit selection voice: Aggressive Spike'
-    samplingRate 16000
-    wantsToBeDefault 20
-}

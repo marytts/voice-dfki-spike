@@ -1,7 +1,9 @@
 voice {
     name = 'dfki-spike'
-    language = 'en'
-    region = 'GB'
+    locale {
+        language = 'en'
+        country = 'GB'
+    }
     gender = 'male'
     type = 'unit selection'
     description = 'A male British English expressive unit selection voice: Aggressive Spike'

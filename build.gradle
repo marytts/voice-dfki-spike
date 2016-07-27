@@ -115,3 +115,7 @@ task extractWav {
         }
     }
 }
+
+legacyInit {
+    dependsOn extractLab, extractText, extractWav
+}

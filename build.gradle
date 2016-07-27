@@ -119,3 +119,12 @@ task extractWav {
 legacyInit {
     dependsOn extractLab, extractText, extractWav
 }
+
+generateVoiceConfig {
+    afterEvaluate {
+        config << [
+                targetCostWeights: "jar:/marytts/voice/$voice.nameCamelCase/customTargetCostWeights.txt",
+                joinCostWeights  : "jar:/marytts/voice/$voice.nameCamelCase/customJoinCostWeights.txt",
+        ]
+    }
+}

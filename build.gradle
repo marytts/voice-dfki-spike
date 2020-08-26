@@ -8,26 +8,29 @@ buildscript {
 }
 
 plugins {
-    id 'de.dfki.mary.voicebuilding-legacy' version '5.2.2'
+    id 'de.dfki.mary.voicebuilding-legacy' version '5.5-SNAPSHOT'
     id 'de.undercouch.download' version '3.1.0'
 }
 
 group 'de.dfki.mary'
 version '5.3-SNAPSHOT'
 
-voice {
-    name = 'dfki-spike'
-    language = 'en'
-    region = 'GB'
-    gender = 'male'
-    type = 'unit selection'
-    description = 'A male British English expressive unit selection voice: Aggressive Spike'
-    license {
-        name = 'Creative Commons Attribution-NoDerivs 3.0 Unported'
-        shortName = 'CC-BY-ND'
-        url = 'http://mary.dfki.de/download/by-nd-3.0.html'
+marytts {
+    voice {
+        name = 'dfki-spike'
+        language = 'en'
+        region = 'GB'
+        gender = 'male'
+        type = 'unit selection'
+        description = 'A male British English expressive unit selection voice: Aggressive Spike'
+        license {
+            name = 'Creative Commons Attribution-NoDerivs 3.0 Unported'
+            shortName = 'CC-BY-ND'
+            url = 'http://mary.dfki.de/download/by-nd-3.0.html'
+        }
+        samplingRate = 16000
     }
-    samplingRate = 16000
+
 }
 
 ext {
@@ -54,7 +57,7 @@ task downloadData(type: Download) {
 
 task extractLab {
     dependsOn downloadData
-    def destDir = file("$buildDir/lab")
+    ext.destDir = file("$buildDir/lab")
     inputs.file yamlFile
     outputs.dir destDir
     doFirst {
@@ -78,7 +81,7 @@ task extractLab {
 
 task extractText {
     dependsOn downloadData
-    def destDir = file("$buildDir/text")
+    ext.destDir = file("$buildDir/text")
     inputs.file yamlFile
     outputs.dir destDir
     doFirst {
@@ -108,23 +111,30 @@ task extractWav {
             if (utterance.segments) {
                 exec {
                     commandLine 'sox', flacFile, "$destDir/${utterance.prompt}.wav",
-                            'trim', utterance.start, "=$utterance.end",
-                            'rate', voice.samplingRate
+                    'trim', utterance.start, "=$utterance.end",
+                    'rate', marytts.voice.samplingRate
                 }
             }
         }
     }
 }
 
-legacyInit {
-    dependsOn extractLab, extractText, extractWav
+basenames {
+    dependsOn "extractWav", "extractText", "extractLab"
+    wavDir = extractWav.destDir
+    textDir = extractText.destDir
+    labDir = extractLab.destDir
+    include '*'
+    exclude 'w0068'
 }
 
-generateVoiceConfig {
-    afterEvaluate {
-        config << [
-                targetCostWeights: "jar:/marytts/voice/$voice.nameCamelCase/customTargetCostWeights.txt",
-                joinCostWeights  : "jar:/marytts/voice/$voice.nameCamelCase/customJoinCostWeights.txt",
-        ]
-    }
-}
+/*
+ generateVoiceConfig {
+ afterEvaluate {
+ config << [
+ targetCostWeights: "jar:/marytts/voice/$marytts.voice.nameCamelCase/customTargetCostWeights.txt",
+ joinCostWeights  : "jar:/marytts/voice/$marytts.voice.nameCamelCase/customJoinCostWeights.txt",
+ ]
+ }
+ }
+ */
